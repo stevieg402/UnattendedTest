@@ -1,0 +1,87 @@
+﻿@model UnattendedTest.Models.BasketModel
+
+@{
+    ViewBag.Title = "G2G3 Digital Basket";
+}
+
+<div class="row" style="margin-top:10px;">
+    <div class="col-md-6">
+        <div role="form">
+            <div class="form-group">
+                @Html.LabelFor(m => m.User.FullName)
+                @Html.TextBoxFor(m => m.User.FullName, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.User.EMail)
+                @Html.TextBoxFor(m => m.User.EMail, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.User.Location)
+                @Html.TextBoxFor(m => m.User.Location, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div role="form">
+            <div class="form-group">
+                <label for="customer-address">Customer address:</label>
+                <textarea class="form-control text-left" rows="6" cols="20" disabled="disabled" style="text-align: left !important">
+                    @Model.User.Address.Number @Model.User.Address.Street
+                    @Model.User.Address.City
+                    @Model.User.Address.Country
+                </textarea>
+            </div>
+            <div>
+                <a href="@Url.Action("Index", "Basket")" class="btn btn-primary btn-lg">Show next basket &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table id="basket-items" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Product name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Cost (@Model.User.Currency)</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th colspan="4" class="text-right">Postage (Carrier: @Model.Postage.Carrier)</th>
+            <th class="text-right">@Model.Postage.Cost.ToString("F")</th>
+        </tr>
+        <tr>
+            <th colspan="4" class="text-right">Total</th>
+            <th class="text-right">@Model.TotalCost.ToString("F")</th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var basketItem in Model.BasketItems)
+        {
+            <tr>
+                <td>@basketItem.ProductName</td>
+                <td>@basketItem.Description</td>
+                <td>@basketItem.Category</td>
+                <td class="text-center"><img src="@basketItem.Image" class="smallimage" /></td>
+                <td class="text-right">@basketItem.Cost.ToString("F")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#basket-items").DataTable({
+                paging: false,
+                searching: true,
+                ordering: true,
+                order: [[ 0, "asc" ]]
+            });
+        });
+    </script>
+}
